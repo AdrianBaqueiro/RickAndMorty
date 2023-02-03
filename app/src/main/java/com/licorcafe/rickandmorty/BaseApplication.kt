@@ -1,9 +1,10 @@
 package com.licorcafe.rickandmorty
 
 import android.app.Application
-import com.licorcafe.rickandmorty.base.networkModule
-import com.licorcafe.rickandmorty.data.module.dataSourcesModule
-import com.licorcafe.rickandmorty.data.module.repositoriesModule
+import com.licorcafe.rickandmorty.repository.api.network.networkModule
+import com.licorcafe.rickandmorty.repository.db.database.rickAndMortyDB
+import com.licorcafe.rickandmorty.repository.module.dataSourcesModule
+import com.licorcafe.rickandmorty.repository.module.repositoriesModule
 import com.licorcafe.rickandmorty.domain.interactor.useCaseModule
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -23,6 +24,7 @@ class BaseApplication : Application() {
             androidContext(this@BaseApplication)
             modules(
                 listOf(
+                    rickAndMortyDB,
                     networkModule("https://rickandmortyapi.com/api/"),
                     repositoriesModule,
                     dataSourcesModule,

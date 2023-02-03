@@ -1,7 +1,7 @@
 package com.licorcafe.rickandmorty.domain.interactor
 
-import com.licorcafe.rickandmorty.data.RickAndMortyRepository
 import com.licorcafe.rickandmorty.domain.model.Characters
+import com.licorcafe.rickandmorty.repository.RickAndMortyRepository
 
 interface GetCharacterListUseCase {
     suspend fun execute(): Characters

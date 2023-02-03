@@ -1,5 +1,7 @@
 package com.licorcafe.rickandmorty.domain.model
 
+import com.licorcafe.rickandmorty.repository.db.model.CharacterEntity
+
 typealias CharacterId = Long
 typealias LocationUrl = String
 
@@ -55,3 +57,17 @@ data class Character(
 data class Characters(val characters: List<Character>)
 data class CharacterDetails(val characters: Character, val locationDetails: LocationDetails)
 
+fun Character.toDB(): CharacterEntity = CharacterEntity.create(
+    id = id,
+    name = name,
+    status = status,
+    species = species,
+    type = type,
+    gender = gender,
+    origin = Location(origin.name, origin.url),
+    location = Location(location.name, location.url),
+    image = image,
+    episode = episode,
+    url = url,
+    created = created
+)
