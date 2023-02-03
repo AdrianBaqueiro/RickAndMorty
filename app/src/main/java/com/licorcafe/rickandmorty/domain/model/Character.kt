@@ -55,7 +55,7 @@ data class Character(
 }
 
 data class Characters(val characters: List<Character>)
-data class CharacterDetails(val characters: Character, val locationDetails: LocationDetails)
+data class CharacterDetails(val characters: Character, val locationDetails: LocationDetails?)
 
 fun Character.toDB(): CharacterEntity = CharacterEntity.create(
     id = id,

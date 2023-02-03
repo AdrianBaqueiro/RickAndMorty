@@ -26,7 +26,7 @@ sealed class CharactersDetailsViewState {
 object Loading : CharactersDetailsViewState()
 
 data class Content(
-    val character: CharacterDetailsViewEntity
+    var character: CharacterDetailsViewEntity
 ) : CharactersDetailsViewState()
 
 data class Problem(val stringId: TextRes) : CharactersDetailsViewState()

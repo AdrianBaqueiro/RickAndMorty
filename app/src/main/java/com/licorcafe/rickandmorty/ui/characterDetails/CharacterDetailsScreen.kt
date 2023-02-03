@@ -9,6 +9,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
+import androidx.compose.material.icons.filled.Done
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -28,6 +29,8 @@ import com.licorcafe.rickandmorty.domain.model.CharacterId
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.Flow
 
+var characterDetailsScreenView = mutableStateOf<CharacterDetailsViewEntity?>(null)
+
 @Composable
 fun CharactersDetailsScreen(
     stateFlow: Flow<CharactersDetailsViewState>,
@@ -37,7 +40,6 @@ fun CharactersDetailsScreen(
     actions: Channel<CharacterDetailsAction>
 ) {
     val state by stateFlow.collectAsState(initialState)
-
     Column {
         CharacterAppBar(state, actions)
         when (val viewState = state) {
@@ -62,13 +64,28 @@ private fun CharacterAppBar(
             IconButton(onClick = { actions.trySend(Up).getOrThrow() }) {
                 Icon(Icons.Filled.ArrowBack, contentDescription = "")
             }
+        },
+        actions = {
+            if(state is Content) {
+                IconButton(onClick = {
+                    characterDetailsScreenView.value?.let {
+                        SaveChanges(it)
+                    }?.let {
+                        actions.trySend(it).getOrThrow()
+                    }
+                    actions.trySend(Up).getOrThrow()
+                },
+                ) {
+                    Icon(Icons.Filled.Done, contentDescription = "")
+                }
+            }
         }
     )
 }
 
 @Composable
 fun CharacterContent(content: Content, actions: Channel<CharacterDetailsAction>) {
-    val (characterDetails, characterDetailsSetter) = remember {
+    characterDetailsScreenView = remember {
         mutableStateOf(content.character)
     }
 
@@ -89,65 +106,60 @@ fun CharacterContent(content: Content, actions: Channel<CharacterDetailsAction>)
                 .aspectRatio(1.5f)
                 .fillMaxWidth()
         )
-        TextFieldComponent(value = characterDetails.name,
-            onValueChange = { newText ->
-                characterDetailsSetter(characterDetails.copy(name = newText))
-            },
-            label = stringResource(R.string.character_details_name)
-        )
-        TextFieldComponent(value = characterDetails.status,
-            onValueChange = { newText ->
-                characterDetailsSetter(characterDetails.copy(status = newText))
-            },
-            label = stringResource(R.string.character_details_status)
-        )
-        TextFieldComponent(value = characterDetails.species,
-            onValueChange = { newText ->
-                characterDetailsSetter(characterDetails.copy(species = newText))
-            },
-            label = stringResource(R.string.character_details_species)
-        )
-        TextFieldComponent(value = characterDetails.gender,
-            onValueChange = { newText ->
-                characterDetailsSetter(characterDetails.copy(gender = newText))
-            },
-            label = stringResource(R.string.character_details_gender)
-        )
-        TextFieldComponent(value = characterDetails.origin,
-            onValueChange = { newText ->
-                characterDetailsSetter(characterDetails.copy(origin = newText))
-            },
-            label = stringResource(R.string.character_details_origin),
-            readOnly = true
-        )
-        TextFieldComponent(value = characterDetails.locationName,
-            onValueChange = { newText ->
-                characterDetailsSetter(characterDetails.copy(locationName = newText))
-            },
-            label = stringResource(R.string.character_details_location_details_name),
-            readOnly = true
-        )
-        TextFieldComponent(value = characterDetails.locationType,
-            onValueChange = { newText ->
-                characterDetailsSetter(characterDetails.copy(locationType = newText))
-            },
-            label = stringResource(R.string.character_details_location_details_type),
-            readOnly = true
-        )
-        TextFieldComponent(value = characterDetails.locationDimension,
-            onValueChange = { newText ->
-                characterDetailsSetter(characterDetails.copy(locationDimension = newText))
-            },
-            label = stringResource(R.string.character_details_location_details_dimension),
-            readOnly = true
-        )
-
-        Button(onClick = {
-            actions.trySend(SaveChanges(characterDetails)).getOrThrow()
-        },
-            colors = ButtonDefaults.buttonColors(backgroundColor = ExtendedTheme.colors.primary)
-        ) {
-            Text(text = stringResource(R.string.save))
+        characterDetailsScreenView.value?.let { characterDetails ->
+            TextFieldComponent(value = characterDetails.name,
+                onValueChange = { newText ->
+                    characterDetailsScreenView.value = characterDetails.copy(name = newText)
+                },
+                label = stringResource(R.string.character_details_name)
+            )
+            TextFieldComponent(value = characterDetails.status,
+                onValueChange = { newText ->
+                    content.character = characterDetails.copy(status = newText)
+                    characterDetailsScreenView.value = characterDetails.copy(status = newText)
+                },
+                label = stringResource(R.string.character_details_status)
+            )
+            TextFieldComponent(value = characterDetails.species,
+                onValueChange = { newText ->
+                    characterDetailsScreenView.value = characterDetails.copy(species = newText)
+                },
+                label = stringResource(R.string.character_details_species)
+            )
+            TextFieldComponent(value = characterDetails.gender,
+                onValueChange = { newText ->
+                    characterDetailsScreenView.value = characterDetails.copy(gender = newText)
+                },
+                label = stringResource(R.string.character_details_gender)
+            )
+            TextFieldComponent(value = characterDetails.origin,
+                onValueChange = { newText ->
+                    characterDetailsScreenView.value = characterDetails.copy(origin = newText)
+                },
+                label = stringResource(R.string.character_details_origin),
+                readOnly = true
+            )
+            TextFieldComponent(value = characterDetails.locationName,
+                onValueChange = { newText ->
+                    characterDetailsScreenView.value = characterDetails.copy(locationName = newText)
+                },
+                label = stringResource(R.string.character_details_location_details_name),
+                readOnly = true
+            )
+            TextFieldComponent(value = characterDetails.locationType,
+                onValueChange = { newText ->
+                    characterDetailsScreenView.value = characterDetails.copy(locationType = newText)
+                },
+                label = stringResource(R.string.character_details_location_details_type),
+                readOnly = true
+            )
+            TextFieldComponent(value = characterDetails.locationDimension,
+                onValueChange = { newText ->
+                    characterDetailsScreenView.value = characterDetails.copy(locationDimension = newText)
+                },
+                label = stringResource(R.string.character_details_location_details_dimension),
+                readOnly = true
+            )
         }
     }
 }

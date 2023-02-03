@@ -27,9 +27,7 @@ class CharacterDetailsFragment : Fragment(R.layout.fragment_compose) {
     }
 
     private val locationUrl: String by lazy(LazyThreadSafetyMode.NONE) {
-        val id = requireArguments().getString(EXTRA_LOCATION_URL, "")
-        check(id != "") { "Please use newBundle() for creating the arguments" }
-        id
+        requireArguments().getString(EXTRA_LOCATION_URL, null)
     }
 
     private val viewModel: CharacterDetailsViewModel by viewModel()

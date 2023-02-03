@@ -80,7 +80,7 @@ class CharacterDetailsViewModel(
         else -> Problem(IdTextRes(R.string.error_unrecoverable))
     }
 
-    private fun Character.toViewEntity(attribution: LocationDetails): CharacterDetailsViewEntity =
+    private fun Character.toViewEntity(attribution: LocationDetails?): CharacterDetailsViewEntity =
         CharacterDetailsViewEntity(
             id = id,
             name = name,
@@ -89,8 +89,8 @@ class CharacterDetailsViewModel(
             gender = gender,
             origin = origin.name,
             thumbnail = image.toHttpUrl(),
-            locationName = attribution.name,
-            locationType = attribution.type,
-            locationDimension = attribution.dimension,
+            locationName = attribution?.name?: "unknow",
+            locationType = attribution?.type?: "unknow",
+            locationDimension = attribution?.dimension?: "unknow",
         )
 }
